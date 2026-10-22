@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marcos Vinicius Souza Silva | Engenheiro de Software</title>
+
+<!-- CSS Externo -->
+    <link rel="stylesheet" href="./style.css">
+
+<!-- OPEN GRAPH / COMPARTILHAMENTO (WhatsApp, LinkedIn, etc) -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://marcossoftwareengineering.github.io/NOME_DO_REPOSITORIO/">
+<meta property="og:title" content="Marcos Vinicius Souza Silva | Engenheiro de Software">
+<meta property="og:description" content="Site portfólio desenvolvido por Marcos Vinicius focado em experiências sensoriais e UX com tema mágico e sons nostálgicos.">
+<!-- IMPORTANTE: Coloque o link absoluto da sua imagem no GitHub Pages aqui -->
+<meta property="og:image" content="https://marcossoftwareengineering.github.io/NOME_DO_REPOSITORIO/src/img/Minha_Logo.jpeg">
+
+<meta name="description" content="Site portfólio desenvolvido por Marcos Vinicius focado em experiências sensoriais e UX com tema mágico e sons nostálgicos.">
+
+<!-- Ícone da aba do navegador -->
+<link rel="icon" type="image/jpeg" href="./src/img/Minha_Logo.jpeg">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+
+</head>
+
+<body class="antialiased relative">
+
+<!-- ENGINE DE ÁUDIO EMBUTIDA (Com Fallback da Nuvem) -->
+<audio id="theme-audio" preload="auto">
+  <source src="./udio.01.ogg/PS1%20Startup%20-%20QuickSounds.com.mp3" type="audio/mpeg">
+  <source src="https://www.myinstants.com/media/sounds/playstation-1-bios-sound.mp3" type="audio/mpeg">
+</audio>
+
+<!-- ÁUDIO DE FEEDBACK DE CLIQUE (Som de Volume do Windows) -->
+<audio id="click-audio" preload="auto">
+  <source src="./udio.01.ogg/WindowsBackground.wav" type="audio/wav">
+</audio>
+
+<!-- ÁUDIO DE TRANSIÇÃO ENTRE PÁGINAS (estilo "Tu-dum") -->
+<audio id="transition-audio" preload="auto">
+  <source src="./udio.01.ogg/netflix-tudum-sfx-n-c.mp3" type="audio/mpeg">
+</audio>
+
+<!-- TELA DE START (O Click Obrigatório que destrava o site) -->
+<div id="start-overlay">
+  <p class="font-mono text-xs tracking-widest text-[#38BDF8] uppercase mb-5">// marcos_software_engineer</p>
+  <button id="btn-start" class="btn-mystic-start">
+    <span class="btn-mystic-start-inner"></span>
+    <span class="btn-mystic-start-text">Acessar Portfólio</span>
+  </button>
+</div>
+
+<!-- SPLASH SCREEN -->
+<div id="splash"></div>
+<canvas id="splash-canvas"></canvas>
+
+<!-- NAVBAR -->
+<header id="navbar" class="fixed top-0 left-0 right-0 z-50 glass transition-all duration-300">
+  <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+    <a href="#inicio" class="flex items-center gap-3 group">
+      <img src="./src/img/Minha_Logo.jpeg" alt="Logo M.S.E." class="h-11 w-auto max-w-[160px] object-contain rounded-md" onerror="this.style.display='none'">
+      <span class="sr-only">M.S.E.</span>
+    </a>
+    
+    <!-- Menu Desktop -->
+    <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
+      <a href="#inicio" class="nav-link">Início</a>
+      <a href="#sobre" class="nav-link">Sobre</a>
+      <a href="#servicos" class="nav-link">Serviços</a>
+      <a href="#projetos" class="nav-link">Projetos</a>
+      <a href="#contato" class="nav-link">Contato</a>
+      <a href="./recrutadores.html" class="nav-link" data-transition-link>Para Recrutadores</a>
+    </nav>
+    <a href="https://wa.me/5571987772415" target="_blank" rel="noopener" class="hidden md:inline-flex btn-primary text-sm px-5 py-2.5 rounded-full">
+      Falar no WhatsApp
+    </a>
+
+    <!-- Botão Menu Hambúrguer (Mobile) -->
+    <button id="mobile-menu-btn" class="md:hidden flex items-center justify-center p-2 text-[color:var(--navy)] focus:outline-none" aria-label="Abrir menu">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Menu Mobile (Dropdown) -->
+  <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full glass border-t flex flex-col px-6 py-6 gap-6 shadow-2xl transition-all duration-300" style="border-color:var(--line); background:var(--bg);">
+    <a href="#inicio" class="mobile-nav-link text-[color:var(--navy)] font-medium text-lg border-b pb-2" style="border-color:var(--line);">Início</a>
+    <a href="#sobre" class="mobile-nav-link text-[color:var(--navy)] font-medium text-lg border-b pb-2" style="border-color:var(--line);">Sobre</a>
+    <a href="#servicos" class="mobile-nav-link text-[color:var(--navy)] font-medium text-lg border-b pb-2" style="border-color:var(--line);">Serviços</a>
+    <a href="#projetos" class="mobile-nav-link text-[color:var(--navy)] font-medium text-lg border-b pb-2" style="border-color:var(--line);">Projetos</a>
+    <a href="#contato" class="mobile-nav-link text-[color:var(--navy)] font-medium text-lg border-b pb-2" style="border-color:var(--line);">Contato</a>
+    <a href="./recrutadores.html" class="mobile-nav-link text-[color:var(--navy)] font-medium text-lg border-b pb-2" style="border-color:var(--line);" data-transition-link>Para Recrutadores</a>
+    <a href="https://wa.me/5571987772415" target="_blank" rel="noopener" class="btn-primary text-center py-3.5 rounded-full mt-2 font-medium">Falar no WhatsApp</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section id="inicio" class="relative pt-40 pb-28 glow overflow-hidden">
+  <div class="grid-bg" aria-hidden="true"></div>
+  <div class="relative z-10 max-w-6xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
+    <div class="hero-in">
+      <span class="font-mono text-xs tracking-widest text-[color:var(--sky)] uppercase">// engenharia_de_software</span>
+      <h1 class="font-display text-4xl sm:text-5xl lg:text-[3.4rem] leading-[1.08] font-bold mt-4 mb-6 text-[color:var(--navy)]">
+        Software que <span class="text-[color:var(--sky)]">escala</span>,<br>
+        arquitetura que <span class="text-[color:var(--emerald)]">dura</span>.
+      </h1>
+      <p class="text-[color:var(--text-dim)] text-base sm:text-lg mb-2 leading-relaxed">
+        Marcos Vinicius Souza Silva — Engenheiro de Software
+      </p>
+      <p class="text-[color:var(--text-dim)] text-sm sm:text-base mb-10 leading-relaxed font-mono">
+        Full-Stack Web Developer · M.S.E.
+      </p>
+      <div class="flex flex-wrap gap-4">
+        <a href="#projetos" class="btn-primary px-7 py-3.5 rounded-full text-sm">Ver Projetos</a>
+        <a href="https://wa.me/5571987772415" target="_blank" rel="noopener" class="btn-ghost px-7 py-3.5 rounded-full text-sm">Falar no WhatsApp</a>
+      </div>
+    </div>
+
+    <div class="hero-in" style="animation-delay:.12s">
+      <div class="terminal rounded-xl overflow-hidden">
+        <div class="flex items-center gap-2 px-4 py-3 border-b" style="border-color:#263142">
+          <span class="dot" style="background:#FF5F57"></span>
+          <span class="dot" style="background:#FEBC2E"></span>
+          <span class="dot" style="background:#28C840"></span>
+          <span class="ml-3 font-mono text-xs text-[#8A96A8]">marcos@mse: ~</span>
+        </div>
+        <div class="p-6 font-mono text-[13px] sm:text-sm leading-7">
+          <p><span class="text-[#38BDF8]">marcos@mse</span><span class="text-[#8A96A8]">:~$</span> whoami</p>
+          <p id="typed-line" class="text-[#E2E8F0]"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOBRE -->
+<section id="sobre" class="py-28 border-t" style="border-color:var(--line)">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="grid lg:grid-cols-5 gap-14">
+      <div class="lg:col-span-2 reveal">
+        <span class="font-mono text-xs tracking-widest text-[color:var(--emerald)] uppercase">// sobre_mim</span>
+        <h2 class="font-display text-3xl sm:text-4xl font-bold mt-4 leading-tight text-[color:var(--navy)]">
+          Arquitetura antes de código.
+        </h2>
+      </div>
+      <div class="lg:col-span-3 reveal" style="transition-delay:.1s">
+        <p class="text-[color:var(--text-dim)] text-base sm:text-lg leading-relaxed mb-10">
+          Profissional focado em entregar soluções de software escaláveis e de alta performance.
+          Especialista na criação de arquiteturas robustas baseadas nos princípios <span class="text-[color:var(--navy)] font-medium">SOLID</span>
+          e <span class="text-[color:var(--navy)] font-medium">Clean Architecture</span>.
+        </p>
+        <div id="stack-container" class="flex flex-wrap gap-3"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVIÇOS -->
+<section id="servicos" class="py-28 border-t" style="border-color:var(--line)">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="mb-16 reveal">
+      <span class="font-mono text-xs tracking-widest text-[color:var(--sky)] uppercase">// serviços</span>
+      <h2 class="font-display text-3xl sm:text-4xl font-bold mt-4 text-[color:var(--navy)]">O que posso construir para você</h2>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+      <!-- Serviço 1 -->
+      <div class="card reveal rounded-2xl p-8 flex flex-col gap-5" style="transition-delay:.0s">
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background:color-mix(in srgb, var(--sky) 12%, transparent); border:1px solid color-mix(in srgb, var(--sky) 25%, transparent);">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="var(--sky)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"></circle>
+            <path d="M21 21l-4.3-4.3"></path>
+            <path d="M8 11h6M11 8v6"></path>
+          </svg>
+        </div>
+        <h3 class="font-display text-lg font-semibold text-[color:var(--navy)]">Consultoria e Debug Avançado</h3>
+        <p class="text-[color:var(--text-dim)] text-sm leading-relaxed">
+          Investigação técnica profunda para sites, e-commerces e sistemas, além de consultoria estratégica voltada para o desenvolvimento escalável.
+        </p>
+      </div>
+
+      <!-- Serviço 2 -->
+      <div class="card reveal rounded-2xl p-8 flex flex-col gap-5" style="transition-delay:.06s">
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background:color-mix(in srgb, var(--emerald) 12%, transparent); border:1px solid color-mix(in srgb, var(--emerald) 25%, transparent);">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 17l6-6 4 4 8-8"></path>
+            <path d="M21 7v6h-6"></path>
+          </svg>
+        </div>
+        <h3 class="font-display text-lg font-semibold text-[color:var(--navy)]">Manutenção e Otimização SEO</h3>
+        <p class="text-[color:var(--text-dim)] text-sm leading-relaxed">
+          Manutenção de alta performance em sites e sistemas, com foco em SEO (Search Engine Optimization) para ranqueamento no topo dos mecanismos de busca.
+        </p>
+      </div>
+
+      <!-- Serviço 3 -->
+      <div class="card reveal rounded-2xl p-8 flex flex-col gap-5" style="transition-delay:.12s">
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background:color-mix(in srgb, var(--sky) 12%, transparent); border:1px solid color-mix(in srgb, var(--sky) 25%, transparent);">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="var(--sky)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="4" y="8" width="16" height="12" rx="2"></rect>
+            <path d="M9 8V6a3 3 0 0 1 6 0v2"></path>
+            <path d="M9 13h.01M15 13h.01"></path>
+          </svg>
+        </div>
+        <h3 class="font-display text-lg font-semibold text-[color:var(--navy)]">IA e Automação</h3>
+        <p class="text-[color:var(--text-dim)] text-sm leading-relaxed">
+          Construção, manutenção e treinamento de Chatbots e Agentes de Inteligência Artificial personalizados.
+        </p>
+      </div>
+
+      <!-- Serviço 4 -->
+      <div class="card reveal rounded-2xl p-8 flex flex-col gap-5" style="transition-delay:.18s">
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background:color-mix(in srgb, var(--emerald) 12%, transparent); border:1px solid color-mix(in srgb, var(--emerald) 25%, transparent);">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.55L3 20l1.05-5.4A8.5 8.5 0 1 1 21 11.5z"></path>
+            <path d="M8 10h8M8 13h5"></path>
+          </svg>
+        </div>
+        <h3 class="font-display text-lg font-semibold text-[color:var(--navy)]">Sistemas de Mensageria</h3>
+        <p class="text-[color:var(--text-dim)] text-sm leading-relaxed">
+          Desenvolvimento de sistemas de disparo de mensagens em massa com integração ao WhatsApp Web e painel de controle (Dashboard) com chat integrado.
+        </p>
+      </div>
+
+      <!-- Serviço 5 -->
+      <div class="card reveal rounded-2xl p-8 flex flex-col gap-5" style="transition-delay:.24s">
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background:color-mix(in srgb, var(--sky) 12%, transparent); border:1px solid color-mix(in srgb, var(--sky) 25%, transparent);">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="var(--sky)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="16 18 22 12 16 6"></polyline>
+            <polyline points="8 6 2 12 8 18"></polyline>
+          </svg>
+        </div>
+        <h3 class="font-display text-lg font-semibold text-[color:var(--navy)]">Engenharia de Software</h3>
+        <p class="text-[color:var(--text-dim)] text-sm leading-relaxed">
+          Desenvolvimento completo de plataformas SaaS, PWAs (Progressive Web Apps) e Aplicativos Nativos.
+        </p>
+      </div>
+
+      <!-- Card de Chamada para Ação -->
+      <div class="reveal rounded-2xl p-8 flex flex-col justify-center gap-5" style="transition-delay:.3s; background: linear-gradient(135deg, var(--sky), var(--emerald));">
+        <h3 class="font-display text-lg font-semibold text-white">Vamos conversar sobre o seu projeto?</h3>
+        <p class="text-white/90 text-sm leading-relaxed">
+          Fale diretamente comigo e descubra a melhor solução para o seu desafio técnico.
+        </p>
+        <a href="https://wa.me/5571987772415" target="_blank" rel="noopener" class="inline-flex items-center justify-center bg-white/95 text-[#0F2942] font-medium text-sm px-6 py-3 rounded-full w-fit hover:bg-white transition">
+          Falar no WhatsApp
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PROJETOS -->
+<section id="projetos" class="py-28 border-t" style="border-color:var(--line)">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="mb-16 reveal">
+      <span class="font-mono text-xs tracking-widest text-[color:var(--sky)] uppercase">// projetos</span>
+      <h2 class="font-display text-3xl sm:text-4xl font-bold mt-4 text-[color:var(--navy)]">Coisas que construí</h2>
+    </div>
+    <div id="projects-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+  </div>
+</section>
+
+<!-- CONTATO -->
+<section id="contato" class="py-28 border-t" style="border-color:var(--line)">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="grid lg:grid-cols-5 gap-14">
+      <div class="lg:col-span-2 reveal">
+        <span class="font-mono text-xs tracking-widest text-[color:var(--emerald)] uppercase">// contato</span>
+        <h2 class="font-display text-3xl sm:text-4xl font-bold mt-4 mb-6 text-[color:var(--navy)] leading-tight">
+          Vamos construir algo juntos.
+        </h2>
+        <p class="text-[color:var(--text-dim)] leading-relaxed mb-8">
+          Me chame no WhatsApp ou envie uma mensagem pelo formulário. Respondo o mais rápido possível.
+        </p>
+        <div class="flex items-center gap-4">
+          <a href="https://www.linkedin.com/in/marcossoftwareengineer" target="_blank" rel="noopener" aria-label="LinkedIn" class="social-icon w-11 h-11 rounded-full flex items-center justify-center">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.61 0 4.27 2.38 4.27 5.47v6.27zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/>
+            </svg>
+          </a>
+          <a href="https://github.com/marcossoftwareengineering" target="_blank" rel="noopener" aria-label="GitHub" class="social-icon w-11 h-11 rounded-full flex items-center justify-center">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 .5C5.73.5.75 5.48.75 11.75c0 5.02 3.25 9.27 7.76 10.77.57.1.78-.25.78-.55 0-.27-.01-1.16-.02-2.11-3.16.69-3.83-1.34-3.83-1.34-.52-1.31-1.27-1.66-1.27-1.66-1.04-.71.08-.7.08-.7 1.15.08 1.75 1.18 1.75 1.18 1.02 1.75 2.67 1.24 3.32.95.1-.74.4-1.24.72-1.53-2.52-.29-5.17-1.26-5.17-5.62 0-1.24.44-2.26 1.17-3.05-.12-.29-.51-1.45.11-3.02 0 0 .96-.31 3.15 1.16.91-.25 1.89-.38 2.86-.38.97 0 1.95.13 2.86.38 2.19-1.47 3.15-1.16 3.15-1.16.62 1.57.23 2.73.11 3.02.73.79 1.17 1.81 1.17 3.05 0 4.37-2.66 5.33-5.19 5.61.41.35.77 1.04.77 2.1 0 1.52-.01 2.74-.01 3.11 0 .3.2.66.79.55 4.51-1.5 7.76-5.75 7.76-10.77C23.25 5.48 18.27.5 12 .5z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <form class="lg:col-span-3 reveal" style="transition-delay:.1s" onsubmit="return handleContactSubmit(event)">
+        <div class="grid sm:grid-cols-2 gap-5 mb-5">
+          <div>
+            <label for="name" class="block text-xs font-mono text-[color:var(--text-dim)] mb-2">Nome</label>
+            <input type="text" id="name" name="name" required placeholder="Seu nome completo" class="field w-full rounded-lg px-4 py-3 text-sm">
+          </div>
+          <div>
+            <label for="email" class="block text-xs font-mono text-[color:var(--text-dim)] mb-2">E-mail</label>
+            <input type="email" id="email" name="email" required placeholder="voce@email.com" class="field w-full rounded-lg px-4 py-3 text-sm">
+          </div>
+        </div>
+        <div class="mb-6">
+          <label for="message" class="block text-xs font-mono text-[color:var(--text-dim)] mb-2">Mensagem</label>
+            <textarea id="message" name="message" rows="5" required minlength="10" placeholder="Conte um pouco sobre o seu projeto..." class="field w-full rounded-lg px-4 py-3 text-sm resize-none"></textarea>
+        </div>
+        <button type="submit" class="btn-primary px-8 py-3.5 rounded-full text-sm">Enviar Mensagem</button>
+        <p id="form-feedback" class="mt-4 text-sm font-mono text-[color:var(--emerald)] hidden">Mensagem pronta para envio. Obrigado pelo contato!</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- THEME SWITCHER -->
+<div id="theme-switcher" role="group" aria-label="Selecionar paleta de cores">
+  <div id="theme-dots" class="flex items-center gap-2"></div>
+</div>
+
+<!-- PAINEL FLUTUANTE DE ÁUDIO (Glassmorphism, inferior-esquerdo) -->
+<div id="audio-panel" role="group" aria-label="Controle de áudio ambiente">
+  <button id="audio-toggle-btn" type="button" aria-label="Reproduzir ou pausar áudio ambiente" aria-pressed="false">
+    <svg id="icon-play" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M8 5v14l11-7z"/>
+    </svg>
+    <svg id="icon-pause" class="w-4 h-4 hidden" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M6 5h4v14H6zM14 5h4v14h-4z"/>
+    </svg>
+  </button>
+  <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M11 5 6 9H2v6h4l5 4V5z"/>
+    <path stroke-linecap="round" stroke-linejoin="round" d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+  </svg>
+  <input id="audio-volume-slider" type="range" min="0" max="100" value="50" step="1" aria-label="Volume do áudio ambiente">
+</div>
+
+<!-- FOOTER -->
+<footer class="border-t py-12" style="border-color:var(--line)">
+  <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-6">
+    <p class="font-mono text-xs text-[color:var(--text-dim)]" id="footer-copy"></p>
+    <div class="flex items-center gap-5 text-sm">
+      <a href="https://wa.me/5571987772415" target="_blank" rel="noopener" class="nav-link">WhatsApp</a>
+      <a href="https://github.com/marcossoftwareengineering" target="_blank" rel="noopener" class="nav-link">GitHub</a>
+    </div>
+    <p class="text-xs text-[color:var(--text-dim)]">Desenvolvido por <span class="text-[color:var(--navy)]">Marcos Software Engineer (M.S.E.)</span></p>
+  </div>
+</footer>
+<!-- JavaScrip  Externo -->
+   <script src="index.js" defer></script>
+   <script src="page-transition.js" defer></script>
+</body>
+</html>
